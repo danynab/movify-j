@@ -1,11 +1,13 @@
 package business.impl;
 
 import business.MovieService;
+import com.avaje.ebean.Expr;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
 import models.Review;
+import play.Logger;
 import play.db.ebean.Model;
 import play.libs.Json;
 
@@ -39,7 +41,7 @@ public class MovieServiceImpl implements MovieService {
             ids.add(movie.getId());
         Collections.shuffle(ids);
         List<Movie> movies = new ArrayList<>();
-        for (int i = 0; i < count && i < movies.size(); i++) {
+        for (int i = 0; i < count && i < ids.size(); i++) {
             movies.add(get(ids.get(i)));
         }
         return movies;
@@ -47,11 +49,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> search(String text) {
-        return find.where("" +
-                "title like '% " + text + "%' or " +
-                "director like '%" + text + "%'" +
-                "writers like '%" + text + "%'" +
-                "stars like '%" + text + "%'").orderBy("title").findList();
+        return find.where().or(Expr.ilike("title","%" + text + "%"),
+                Expr.or(Expr.ilike("director","%" + text + "%"),
+                        Expr.or(Expr.ilike("writers","%" + text + "%"),
+                                Expr.ilike("stars","%" + text + "%")))).orderBy("title").findList();
     }
 
     @Override
@@ -90,7 +91,7 @@ public class MovieServiceImpl implements MovieService {
         result.put("rating", rating);
         result.put("userReview", Json.toJson(reviewToAdd));
 
-        return result.textValue();
+        return result.toString();
     }
 
     @Override
@@ -99,6 +100,12 @@ public class MovieServiceImpl implements MovieService {
         for (Movie movie: movies)
             wrappers.add(createWrapper(movie));
         return Json.stringify(Json.toJson(wrappers));
+    }
+
+    @Override
+    public String movieToJson(Movie movie) {
+        MovieWrapper wrapper = createWrapper(movie);
+        return Json.stringify(Json.toJson(wrapper));
     }
 
     private MovieWrapper createWrapper(Movie movie) {

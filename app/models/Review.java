@@ -2,6 +2,7 @@ package models;
 
 import play.db.ebean.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ public class Review extends Model {
     private int id;
     private String username;
     private int movieId;
+    @Column(length=1500)
     private String comment;
     private double rating;
 

@@ -101,7 +101,7 @@ function showPage(pageId, link) {
 }
 
 function showDetailsPage(movieId) {
-    $.get('http://156.35.95.67/movifyj/movies/' + movieId, function (data) {
+    $.get('/movifyj/movies/' + movieId, function (data) {
         data = $.parseJSON(data);
 
         currentMovieId = data.id;
@@ -164,7 +164,7 @@ function showDetailsPage(movieId) {
 }
 
 function showMoviesByGenre(genre) {
-    $.get('http://156.35.95.67/movifyj/genres/' + genre + '/movies', function (data) {
+    $.get('/movifyj/genres/' + genre + '/movies', function (data) {
         data = $.parseJSON(data);
 
         var content = '';
@@ -194,7 +194,7 @@ function showMoviesByGenre(genre) {
 }
 
 function searchMovies(title) {
-    $.get('http://156.35.95.67/movifyj/movies?search=' + title, function (data) {
+    $.get('/movifyj/movies?search=' + title, function (data) {
         data = $.parseJSON(data);
 
         var content = '';
@@ -238,7 +238,7 @@ function submitReview() {
     if (comment) {
         $.ajax({
             type: 'post',
-            url: 'http://156.35.95.67/movifyj/movies/' + currentMovieId + '/reviews',
+            url: '/movifyj/movies/' + currentMovieId + '/reviews',
             data: JSON.stringify({comment: comment, rating: currentMovieRating}),
             contentType: 'application/json',
             traditional: true,

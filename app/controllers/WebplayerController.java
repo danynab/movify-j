@@ -5,6 +5,7 @@ import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
 import models.Review;
+import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -27,23 +28,23 @@ public class WebplayerController extends Controller {
     public static Result findGenres() {
         List<Genre> genres = Factories.businessFactory.getGenreService().getAll();
         String json = Factories.businessFactory.getGenreService().genresToJson(genres);
-        return ok(Json.parse(json));
+        return ok(json);
     }
 
     public static Result getGenre(String name) {
         Genre genre = Factories.businessFactory.getGenreService().get(name);
-        return ok(Json.toJson(genre));
+        return ok(Json.toJson(genre).toString());
     }
 
     public static Result getMoviesByGenre(String name) {
         List<Movie> movies = Factories.businessFactory.getGenreService().getMovies(name);
         String json = Factories.businessFactory.getMovieService().moviesToJson(movies);
-        return ok(Json.parse(json));
+        return ok(json);
     }
 
     public static Result findMovies() {
         String search = request().getQueryString("search");
-        List<Movie> movies = null;
+        List<Movie> movies;
         if (search == null) {
             movies = Factories.businessFactory.getMovieService().getAll();
         }
@@ -51,14 +52,16 @@ public class WebplayerController extends Controller {
             movies = Factories.businessFactory.getMovieService().search(search);
         }
         String json = Factories.businessFactory.getMovieService().moviesToJson(movies);
-        return ok(Json.parse(json));
+        return ok(json);
     }
 
     public static Result getMovie(int id) {
         Movie movie = Factories.businessFactory.getMovieService().get(id);
         String userName = session(Application.USERNAME_KEY);
         Review review =  Factories.businessFactory.getReviewService().getByMovieIdAndUsername(movie.getId(), userName);
-        String json = Factories.businessFactory.getMovieService().movieWithReviewToJson(movie, review);
-        return ok(Json.parse(json));
+        if (review != null)
+            return ok(Factories.businessFactory.getMovieService().movieWithReviewToJson(movie, review));
+        else
+            return ok(Factories.businessFactory.getMovieService().movieToJson(movie));
     }
 }

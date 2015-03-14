@@ -23,4 +23,6 @@ public interface MovieService {
     public String movieWithReviewToJson(Movie movie, Review review);
 
     public String moviesToJson(List<Movie> movies);
+
+    public String movieToJson(Movie movie);
 }

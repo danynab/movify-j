@@ -22,7 +22,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getByMovieIdAndUsername(int movieId, String username) {
-        return find.where("movieId = " + movieId + " and username = " + username).findUnique();
+        return find.where("movieId = " + movieId + " and username = '" + username + "'").findUnique();
     }
 
     @Override

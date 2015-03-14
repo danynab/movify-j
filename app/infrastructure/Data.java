@@ -3,6 +3,9 @@ package infrastructure;
 import models.Genre;
 import models.Movie;
 import models.Subscription;
+import models.User;
+
+import java.util.Random;
 
 /**
  * Created by Dani on 13/3/15.
@@ -10,6 +13,7 @@ import models.Subscription;
 public class Data {
 
     private static final String URL_BASE = "http://156.35.95.67/movifyj/assets/";
+    private static final String URL_BASE2 = "http://156.35.95.67/movify/static/";
 
     private static Data instance;
 
@@ -34,13 +38,32 @@ public class Data {
         }
 
         relationsMovieGenre();
+        User dani = Factories.businessFactory.getUserService().signUp("dani", "dani", "dani@movify.com");
+        User david = Factories.businessFactory.getUserService().signUp("david", "david", "david@movify.com");
+        User marco = Factories.businessFactory.getUserService().signUp("marco", "marco", "marco@movify.com");
+        User luis = Factories.businessFactory.getUserService().signUp("luis", "luis", "luis@movify.com");
+        User pepe = Factories.businessFactory.getUserService().signUp("pepe", "pepe", "pepe@movify.com");
+
+
+        Random r = new Random();
 
         for (Movie movie : movies) {
             movie.setBackground(URL_BASE + "background/" + movie.getBackground());
             movie.setCover(URL_BASE + "covers/" + movie.getCover());
+            movie.setMovie(URL_BASE2 + "movies/" + movie.getMovie());
+            movie.setMovie(URL_BASE2 + "trailers/" + movie.getTrailer());
             movie.save();
+
+            Factories.businessFactory.getReviewService().rateMovie(dani.getUsername(), movie.getId(), comment1, r.nextInt(6));
+            Factories.businessFactory.getReviewService().rateMovie(david.getUsername(), movie.getId(), comment2, r.nextInt(6));
+            Factories.businessFactory.getReviewService().rateMovie(marco.getUsername(), movie.getId(), comment3, r.nextInt(6));
+            Factories.businessFactory.getReviewService().rateMovie(pepe.getUsername(), movie.getId(), comment4, r.nextInt(6));
+            Factories.businessFactory.getReviewService().rateMovie(luis.getUsername(), movie.getId(), comment5, r.nextInt(6));
         }
+
+
     }
+
 
     private Subscription subscription1 = new Subscription(
             "1 month",
@@ -390,6 +413,16 @@ public class Data {
             movie10, movie11, movie12, movie13, movie14, movie15, movie16, movie17, movie18
     };
 
+    private String comment1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vitae metus inerat pellentesque tristique. Aliquam non tincidunt velit. Integer placerat luctusvelit, vitae lacinia nisi placerat id. Duis at sapien nulla. Duis scelerisque quamet diam semper, a commodo libero rhoncus. Fusce bibendum id nibh eu rhoncus. Nullacursus, libero at maximus aliquam, leo justo efficitur urna, ac elementum sem nunceu tellus. Nullam fringilla porta venenatis. In pharetra quam pretium ex suscipitluctus. Sed ornare varius tortor, ac ornare tellus tristique et. Aenean velultrices tortor. Morbi tempus commodo quam nec ultrices. Vestibulum at enim magna.Vivamus auctor semper libero varius rutrum. Ut vel fringilla nisi.";
+
+    private String comment2 = "Proin congue tincidunt orci, fringilla maximus urna rutrum in. Duis elementumultrices scelerisque. Praesent ante est, vestibulum in nulla vel, dignissiminterdum nisl. Morbi ullamcorper odio porttitor, interdum lacus non, viverra mi.Ut ut congue libero. In fringilla orci ligula, mattis viverra lorem pulvinar sitamet. Vestibulum et mi massa.";
+
+    private String comment3 = "Sed sit amet semper nisl. Proin eget lorem ut felis auctor rutrum in a lectus.Aenean eget lacinia elit. Nulla molestie risus a diam posuere, sit amet interdumipsum tempor. Nunc ac vehicula sem. Ut tincidunt libero leo, a accumsan nullaiaculis ac. Nunc volutpat tempor justo et pellentesque. Aenean lorem metus,hendrerit at velit sed, euismod porttitor eros. Curabitur elementum felis mauris,in condimentum mauris placerat eget. Aliquam pellentesque ipsum quis consecteturaliquet.";
+
+    private String comment4 = "Praesent ultrices, nulla vitae consectetur imperdiet, nulla purus condimentum elit,ac facilisis nisi ligula commodo purus. Duis eget metus mi. Pellentesque habitantmorbi tristique senectus et netus et malesuada fames ac turpis egestas.Pellentesque quis efficitur lectus. In aliquam arcu mi, lacinia pretium quamposuere at. Praesent molestie, sapien eu lacinia tristique, enim nunc aliquetlacus, et porttitor ligula dui id felis. Sed risus mauris, scelerisque vel sapienet, mattis cursus est. In ornare tellus nulla, at dignissim libero porta id. Cumsociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.Sed sed feugiat dui. Maecenas ultrices ipsum ac dignissim rutrum. Proin consequatmassa metus, et pretium metus gravida vitae. Donec purus dolor, ultricies euismodtincidunt sed, luctus id quam. Mauris hendrerit tristique ante, posuere vulputatenisl gravida sed. Aliquam sit amet risus quis ligula vulputate semper. Aeneanvolutpat tellus nec nunc consequat, eget feugiat tortor placerat.";
+
+    private String comment5 = "Proin non felis at tellus consequat viverra at ut nisl. In laoreet, tellus idfeugiat maximus, libero dolor sagittis purus, vel dignissim libero erat quisturpis. Vestibulum tincidunt lobortis eleifend. Sed sit amet rutrum leo, quisluctus metus. Morbi rhoncus mauris vel auctor consequat. Vestibulum ante ipsumprimis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut sed venenatisturpis. Proin fermentum tellus ac congue tristique. Sed luctus porttitor nisi, utlaoreet elit congue egestas";
+
     private void relationsMovieGenre() {
         movie1.addGenre(action);
         movie1.addGenre(adventure);
@@ -459,4 +492,6 @@ public class Data {
         movie18.addGenre(adventure);
         movie18.addGenre(scifi);
     }
+
+
 }

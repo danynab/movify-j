@@ -30,7 +30,7 @@ create table review (
   id                        integer not null,
   username                  varchar(255),
   movie_id                  integer,
-  comment                   varchar(255),
+  comment                   varchar(1500),
   rating                    double,
   constraint pk_review primary key (id))
 ;
