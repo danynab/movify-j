@@ -13,6 +13,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
+import views.html.notfound;
 import views.html.webplayer;
 
 import java.util.List;
@@ -20,7 +21,8 @@ import java.util.List;
 /**
  * Created by Dani on 14/3/15.
  */
-@With({LoginRequiredAction.class, SubscriptionRequiredAction.class})
+@With(LoginRequiredAction.class)
+//@With({LoginRequiredAction.class, SubscriptionRequiredAction.class})
 public class WebplayerController extends Controller {
 
     public static Result showWebplayer() {
@@ -38,10 +40,16 @@ public class WebplayerController extends Controller {
 
     public static Result getGenre(String name) {
         Genre genre = Factories.businessFactory.getGenreService().get(name);
+        if (genre == null){
+            return notFound(notfound.render());
+        }
         return ok(Json.toJson(genre).toString());
     }
 
     public static Result getMoviesByGenre(String name) {
+        Genre genre = Factories.businessFactory.getGenreService().get(name);
+        if(genre == null)
+            return notFound(notfound.render());
         List<Movie> movies = Factories.businessFactory.getGenreService().getMovies(name);
         String json = Factories.businessFactory.getMovieService().moviesToJson(movies);
         return ok(json);
@@ -61,6 +69,9 @@ public class WebplayerController extends Controller {
 
     public static Result getMovie(int id) {
         Movie movie = Factories.businessFactory.getMovieService().get(id);
+        if (movie == null) {
+            return notFound(notfound.render());
+        }
         String username = session(Application.USERNAME_KEY);
         Review review = Factories.businessFactory.getReviewService().getByMovieIdAndUsername(movie.getId(), username);
         if (review != null)
@@ -70,6 +81,10 @@ public class WebplayerController extends Controller {
     }
 
     public static Result rateMovie(int id) {
+        Movie movie = Factories.businessFactory.getMovieService().get(id);
+        if (movie == null) {
+            return notFound(notfound.render());
+        }
         DynamicForm requestData = Form.form().bindFromRequest();
         String comment = StringEscapeUtils.escapeHtml4(requestData.get("comment"));
         String ratingStr = requestData.get("rating");
