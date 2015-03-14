@@ -32,7 +32,7 @@ public class Application extends Controller {
 
     public static Result init() {
         Data.getInstance().init();
-        return redirect(routes.Application.index());
+        return redirect(controllers.routes.Application.index());
     }
 
 }

@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.paypal.base.rest.PayPalRESTException;
+import filters.LoginRequiredAction;
 import infrastructure.CajasturPayment;
 import infrastructure.Factories;
 import infrastructure.PaypalPayment;
@@ -11,6 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import views.html.account;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +22,7 @@ import java.util.List;
 /**
  * Created by Dani on 14/3/15.
  */
+@With(LoginRequiredAction.class)
 public class AccountController extends Controller {
 
     private static String generateProductName(int months) {
@@ -83,7 +86,7 @@ public class AccountController extends Controller {
         if (paymentIdHash != null && paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
             Factories.businessFactory.getUserService().increaseExpiration(username, months);
         }
-        return redirect(routes.AccountController.showAccount());
+        return redirect(controllers.routes.AccountController.showAccount());
     }
 
     public static Result generateCajasturPayment() {
@@ -125,6 +128,6 @@ public class AccountController extends Controller {
         String username = session(Application.USERNAME_KEY);
         if (cajasturId != null)
             Factories.businessFactory.getUserService().increaseExpiration(username, months);
-        return redirect(routes.AccountController.showAccount());
+        return redirect(controllers.routes.AccountController.showAccount());
     }
 }

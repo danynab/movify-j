@@ -1,14 +1,14 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import filters.LoginRequiredAction;
 import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
 import models.Review;
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import views.html.webplayer;
 
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by Dani on 14/3/15.
  */
+@With(LoginRequiredAction.class)
 public class WebplayerController extends Controller {
 
     public static Result showWebplayer() {
@@ -47,8 +48,7 @@ public class WebplayerController extends Controller {
         List<Movie> movies;
         if (search == null) {
             movies = Factories.businessFactory.getMovieService().getAll();
-        }
-        else {
+        } else {
             movies = Factories.businessFactory.getMovieService().search(search);
         }
         String json = Factories.businessFactory.getMovieService().moviesToJson(movies);
@@ -58,7 +58,7 @@ public class WebplayerController extends Controller {
     public static Result getMovie(int id) {
         Movie movie = Factories.businessFactory.getMovieService().get(id);
         String userName = session(Application.USERNAME_KEY);
-        Review review =  Factories.businessFactory.getReviewService().getByMovieIdAndUsername(movie.getId(), userName);
+        Review review = Factories.businessFactory.getReviewService().getByMovieIdAndUsername(movie.getId(), userName);
         if (review != null)
             return ok(Factories.businessFactory.getMovieService().movieWithReviewToJson(movie, review));
         else

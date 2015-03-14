@@ -1,11 +1,13 @@
 package controllers;
 
+import filters.LoginRequiredAction;
 import infrastructure.Factories;
 import models.User;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.With;
 import views.html.login;
 import views.html.signup;
 
@@ -24,15 +26,16 @@ public class UserController extends Controller {
             String sessionId = Application.calculateSessionId(request());
             session(Application.SESSION_ID_KEY, sessionId);
             session(Application.USERNAME_KEY, username);
-            return redirect(routes.Application.index());
+            return redirect(controllers.routes.Application.index());
         } else
-            return redirect(routes.UserController.showSignUp());
+            return redirect(controllers.routes.UserController.showSignUp());
     }
 
+    @With(LoginRequiredAction.class)
     public static Result doLogout() {
         session().remove(Application.SESSION_ID_KEY);
         session().remove(Application.USERNAME_KEY);
-        return redirect(routes.Application.index());
+        return redirect(controllers.routes.Application.index());
     }
 
     public static Result showSignUp() {
