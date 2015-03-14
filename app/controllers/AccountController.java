@@ -2,12 +2,12 @@ package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.paypal.base.rest.PayPalRESTException;
+import infrastructure.CajasturPayment;
 import infrastructure.Factories;
 import infrastructure.PaypalPayment;
 import models.Subscription;
 import models.User;
 import org.apache.commons.codec.digest.DigestUtils;
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -79,10 +79,52 @@ public class AccountController extends Controller {
         int months = Integer.parseInt(session(Application.MONTHS_KEY));
         session().remove(Application.PAYPAL_ID_KEY);
         session().remove(Application.MONTHS_KEY);
-        String userName = session(Application.USERNAME_KEY);
+        String username = session(Application.USERNAME_KEY);
         if (paymentIdHash != null && paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
-            Factories.businessFactory.getUserService().increaseExpiration(userName, months);
+            Factories.businessFactory.getUserService().increaseExpiration(username, months);
         }
+        return redirect(routes.AccountController.showAccount());
+    }
+
+    public static Result generateCajasturPayment() {
+        int months = Integer.parseInt(request().getQueryString("months"));
+        Subscription subscription = Factories.businessFactory.getSubscriptionService().getByMonths(months);
+        if (subscription == null)
+            return badRequest();
+        String operation = generateProductName(months);
+        double price = subscription.getPrice();
+        String description = "Movify " + subscription.getName() + " subscription";
+        String returnUrl = "http://156.35.95.67/movifyj/account/subscription/cajastur";
+        String cancelUrl = "http://156.35.95.67/movifyj/account";
+        CajasturPayment cajasturPayment = new CajasturPayment(operation, price, description, returnUrl, cancelUrl);
+        session(Application.MONTHS_KEY, String.valueOf(months));
+        session(Application.CAJASTUR_ID_KEY, DigestUtils.md5Hex(cajasturPayment.getSignature()));
+        ObjectNode result = Json.newObject();
+        result.put("operation", cajasturPayment.getOperation());
+        result.put("price", cajasturPayment.getPrice());
+        result.put("description", cajasturPayment.getDescription());
+        ObjectNode commerceData = Json.newObject();
+        commerceData.put("MERCHANT_ID", CajasturPayment.MERCHANT_ID);
+        commerceData.put("ACQUIRER_BIN", CajasturPayment.ACQUIRER_BIN);
+        commerceData.put("TERMINAL_ID", CajasturPayment.TERMINAL_ID);
+        commerceData.put("CLAVE_ENCRIPTACION", CajasturPayment.CLAVE_ENCRIPTACION);
+        commerceData.put("TIPO_MONEDA", CajasturPayment.TIPO_MONEDA);
+        commerceData.put("EXPONENTE", CajasturPayment.EXPONENTE);
+        result.put("commerce_data", commerceData);
+        result.put("url_ok", cajasturPayment.getUrlOk());
+        result.put("url_error", cajasturPayment.getUrlError());
+        result.put("signature", cajasturPayment.getSignature());
+        return ok(result);
+    }
+
+    public static Result processCajasturPayment() {
+        String cajasturId = session(Application.CAJASTUR_ID_KEY);
+        int months = Integer.parseInt(session(Application.MONTHS_KEY));
+        session().remove(Application.CAJASTUR_ID_KEY);
+        session().remove(Application.MONTHS_KEY);
+        String username = session(Application.USERNAME_KEY);
+        if (cajasturId != null)
+            Factories.businessFactory.getUserService().increaseExpiration(username, months);
         return redirect(routes.AccountController.showAccount());
     }
 }

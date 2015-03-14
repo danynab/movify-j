@@ -3,19 +3,21 @@
 # ~~~~
 
 # Home page
-GET         /movifyj/                             controllers.Application.index
-GET         /movifyj/init                         controllers.Application.init
+GET         /movifyj/                               controllers.Application.index
+GET         /movifyj/init                           controllers.Application.init
 
-GET         /movifyj/login                        controllers.UserController.showLogin
-POST        /movifyj/login                        controllers.UserController.doLogin
-GET         /movifyj/signup                       controllers.UserController.showSignUp
-POST        /movifyj/signup                       controllers.UserController.doSignUp
-GET         /movifyj/logout                       controllers.UserController.doLogout
+GET         /movifyj/login                          controllers.UserController.showLogin
+POST        /movifyj/login                          controllers.UserController.doLogin
+GET         /movifyj/signup                         controllers.UserController.showSignUp
+POST        /movifyj/signup                         controllers.UserController.doSignUp
+GET         /movifyj/logout                         controllers.UserController.doLogout
 
-GET         /movifyj/account                      controllers.AccountController.showAccount
-GET         /movifyj/generatePaypalPayment        controllers.AccountController.generatePaypalPayment
-GET         /movifyj/account/subscription/paypal  controllers.AccountController.processPaypalPayment
-POST        /movifyj/account/subscription/paypal  controllers.AccountController.processPaypalPayment
+GET         /movifyj/account                        controllers.AccountController.showAccount
+GET         /movifyj/generatePaypalPayment          controllers.AccountController.generatePaypalPayment
+GET         /movifyj/generateCajasturPayment        controllers.AccountController.generateCajasturPayment
+GET         /movifyj/account/subscription/paypal    controllers.AccountController.processPaypalPayment
+POST        /movifyj/account/subscription/paypal    controllers.AccountController.processPaypalPayment
+GET         /movifyj/account/subscription/cajastur  controllers.AccountController.processCajasturPayment
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /movifyj/assets/*file                 controllers.Assets.at(path="/public", file)

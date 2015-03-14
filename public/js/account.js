@@ -1,7 +1,7 @@
 var paypalLinkClicked = false;
 
 function generateCajasturPaymentData(months) {
-    $.getJSON('/movifyj/_generate_cajastur_payment_data', {
+    $.getJSON('/movifyj/generateCajasturPayment', {
         months: months
     }, function (cajastur) {
         $('#MerchantID').val(cajastur.commerce_data.MERCHANT_ID);
@@ -36,7 +36,7 @@ $(function () {
         $('#payment-modal-loading').hide();
         $('#payment-modal-content').show();
         var months = this.getAttribute('data-months')
-        //generateCajasturPaymentData(months);
+        generateCajasturPaymentData(months);
         generatePaypalPaymentData(months);
         return false;
     });
