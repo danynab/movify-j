@@ -3,9 +3,7 @@ import play.libs.F;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import static play.mvc.Results.badRequest;
-import static play.mvc.Results.internalServerError;
-import static play.mvc.Results.notFound;
+import static play.mvc.Results.*;
 
 
 /**

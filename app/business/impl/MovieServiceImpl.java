@@ -7,7 +7,6 @@ import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
 import models.Review;
-import play.Logger;
 import play.db.ebean.Model;
 import play.libs.Json;
 
@@ -49,10 +48,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> search(String text) {
-        return find.where().or(Expr.ilike("title","%" + text + "%"),
-                Expr.or(Expr.ilike("director","%" + text + "%"),
-                        Expr.or(Expr.ilike("writers","%" + text + "%"),
-                                Expr.ilike("stars","%" + text + "%")))).orderBy("title").findList();
+        return find.where().or(Expr.ilike("title", "%" + text + "%"),
+                Expr.or(Expr.ilike("director", "%" + text + "%"),
+                        Expr.or(Expr.ilike("writers", "%" + text + "%"),
+                                Expr.ilike("stars", "%" + text + "%")))).orderBy("title").findList();
     }
 
     @Override
@@ -97,7 +96,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public String moviesToJson(List<Movie> movies) {
         List<MovieWrapper> wrappers = new ArrayList<>();
-        for (Movie movie: movies)
+        for (Movie movie : movies)
             wrappers.add(createWrapper(movie));
         return Json.stringify(Json.toJson(wrappers));
     }
@@ -115,7 +114,7 @@ public class MovieServiceImpl implements MovieService {
             sum += review.getRating();
         }
         List<GenreWrapper> genreWrappers = new ArrayList<>();
-        for(Genre genre: movie.getGenres())
+        for (Genre genre : movie.getGenres())
             genreWrappers.add(new GenreWrapper(genre.getName(), genre.getImage()));
         double rating = (new Double((sum / (reviews.size() * 1.0)) * 100).intValue()) / 100.0;
         MovieWrapper wrapper = new MovieWrapper(movie.getId(), movie.getTitle(),

@@ -1,7 +1,6 @@
 package controllers;
 
 import filters.LoginRequiredAction;
-import filters.SubscriptionRequiredAction;
 import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
@@ -40,7 +39,7 @@ public class WebplayerController extends Controller {
 
     public static Result getGenre(String name) {
         Genre genre = Factories.businessFactory.getGenreService().get(name);
-        if (genre == null){
+        if (genre == null) {
             return notFound(notfound.render());
         }
         return ok(Json.toJson(genre).toString());
@@ -48,7 +47,7 @@ public class WebplayerController extends Controller {
 
     public static Result getMoviesByGenre(String name) {
         Genre genre = Factories.businessFactory.getGenreService().get(name);
-        if(genre == null)
+        if (genre == null)
             return notFound(notfound.render());
         List<Movie> movies = Factories.businessFactory.getGenreService().getMovies(name);
         String json = Factories.businessFactory.getMovieService().moviesToJson(movies);

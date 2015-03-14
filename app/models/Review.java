@@ -18,7 +18,7 @@ public class Review extends Model {
     private int id;
     private String username;
     private int movieId;
-    @Column(length=1500)
+    @Column(length = 1500)
     private String comment;
     private double rating;
 

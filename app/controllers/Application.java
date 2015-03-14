@@ -2,7 +2,6 @@ package controllers;
 
 import infrastructure.Data;
 import org.apache.commons.codec.digest.DigestUtils;
-import play.Logger;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;

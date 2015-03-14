@@ -18,9 +18,9 @@ public class Movie extends Model {
     private String title;
     private int year;
     private int duration;
-    @Column(length=500)
+    @Column(length = 500)
     private String description;
-    @Column(length=1000)
+    @Column(length = 1000)
     private String storyline;
     private String director;
     private String writers;

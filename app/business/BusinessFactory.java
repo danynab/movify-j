@@ -1,7 +1,5 @@
 package business;
 
-import models.Movie;
-
 /**
  * Created by Dani on 13/3/15.
  */
