@@ -1,6 +1,7 @@
 package controllers;
 
 import filters.LoginRequiredAction;
+import filters.SubscriptionRequiredAction;
 import infrastructure.Factories;
 import models.Genre;
 import models.Movie;
@@ -20,8 +21,8 @@ import java.util.List;
 /**
  * Created by Dani on 14/3/15.
  */
-@With(LoginRequiredAction.class)
-//@With({LoginRequiredAction.class, SubscriptionRequiredAction.class})
+//@With(LoginRequiredAction.class)
+@With({LoginRequiredAction.class, SubscriptionRequiredAction.class})
 public class WebplayerController extends Controller {
 
     public static Result showWebplayer() {
