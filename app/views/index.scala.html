@@ -1,0 +1,111 @@
+@(username: String)
+
+@main("Movify") {
+    <header>
+        <nav>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img src="@routes.Assets.at("images/logo.png")" alt="Movify logo"/>
+
+                        <h1>Movify</h1>
+                    </div>
+                    <div class="col-sm-8">
+                        <ul>
+                            @if(username == null) {
+                                <li><a href="@routes.UserController.showSignUp()">Subscribe</a></li>
+                                <li>Help</li>
+                                <li><a href="@routes.UserController.showLogin()">Log in</a></li>
+                            } else {
+                                <li><a href="@routes.AccountController.showAccount()">Account</a></li>
+                                <li>Help</li>
+                                <li><a href="@routes.UserController.doLogout()">Log out</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="parallax-window" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/couch.jpg")">
+        <div id="hero" class="container">
+            <h2>Movies for everyone.</h2>
+
+            <p class="lead">
+                Reconquer your couch. Movify let you connect again with your favourite passion. Yeah, thats it.
+                Movies.</p>
+            @if(username == null) {
+                <a class="green-button" href="@routes.UserController.showSignUp()">Subscribe now</a>
+            } else {
+                <a class="green-button" href="@routes.AccountController.showAccount()">Subscribe now</a>
+            }
+            <p><a href="@routes.Application.index()">Go to Web Player</a></p>
+        </div>
+    </div>
+
+    <section class="box">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 box-text">
+                    <h2>All the movies are here.</h2>
+
+                    <p>Movify gives you millions of movies at your fingertips. The actors your love, top box office movies
+                        and new discoveries just for you. Hit play to stream anyting you like.</p>
+                </div>
+
+                <div class="col-md-5 box-image">
+                    <img class="img-responsive" src="@routes.Assets.at("images/covers.png")"
+                    alt="Movie covers"/>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="parallax-window" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/popcorn.jpg")"></div>
+
+    <section class="box">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 box-image">
+                    <img class="img-responsive" src="@routes.Assets.at("images/genres.png")"
+                    alt="Movie genres icons"/>
+                </div>
+
+                <div class="col-md-7 box-text">
+                    <h2>Looking for the right movie? Just browse.</h2>
+
+                    <p>With Movify there's always great movies to watch. Browse amazing movies for every mood and genre.
+                        Perfect if you don't know what to watch or if you're in the mood for something new.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="parallax-window" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/movies.jpg")"></div>
+
+    <section class="box">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 box-text">
+                    <h2>Movies brings us together.</h2>
+
+                    <p>That's why Movify is so social. Share movies on Movify, Facebook, Twitter, your blog, anywhere. You
+                        can also get closer to the friends, arctors, directors and trendsetters who turn you on to great
+                        movies. Find out what they're watching to right now.</p>
+                </div>
+
+                <div class="col-md-5 box-image">
+                    <img class="img-responsive" src="@routes.Assets.at("images/bubbles.png")"
+                    alt="Dialog bubbles"/>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="parallax-window" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/couple.jpg")"></div>
+    @footer()
+}

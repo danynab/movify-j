@@ -1,0 +1,130 @@
+@(subscriptions: List[Subscription], username: String, expired: Boolean, expiration: String)
+
+@import scala.collection.JavaConversions._
+
+@main("Account overview - Movify") {
+    <header>
+        <nav>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img src="@routes.Assets.at("images/logo.png")" alt="Movify logo"/>
+
+                        <h1>Movify</h1>
+                    </div>
+                    <div class="col-sm-8">
+                        <ul>
+                            <li><a href="@routes.Application.index()">Home</a></li>
+                            <li>Help</li>
+                            <li><a href="@routes.UserController.doLogout()">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="parallax-window medium" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/gradient.jpg")">
+        <div id="hero" class="container">
+            <h2>Hello @username</h2>
+
+            <p class="lead">
+                This is your account overview panel and you can do almost anything from here. Any problem with
+                your account?</p>
+            <a class="green-button" href="#">Ask for help</a>
+        </div>
+    </div>
+
+    <section id="subscription" class="box">
+        <div class="container">
+            @if(expired) {
+                <h3>Choose your plan</h3>
+
+                <p class="lead">You haven't got an active subscription. Choose one below.</p>
+
+                <h4>Purchase subscription for</h4>
+
+            } else {
+                <h3>Upgrade your plan</h3>
+
+                <p class="lead">Your subscription expires on <span class="green">@expiration</span>.
+
+                <p>
+
+                <p class="lead"> Don't want to wait to update your subscription? You can do it now below.</p>
+
+                <h4>Purchase extension for</h4>
+            }
+
+            <div id="products" class="row">
+            @for(subscription <- subscriptions) {
+                <div class="col-md-4 col-sm-12 col-xs-12 product">
+                    <h5>@subscription.getName()</h5>
+
+                    <p>@subscription.getPrice()€</p>
+
+                    <p>@subscription.getDescription()</p>
+
+                    <a data-months="@subscription.getMonths()" class="checkout green-button" href="#">Check out</a>
+                </div>
+            }
+            </div>
+        </div>
+    </section>
+
+    <div class="parallax-window tiny" data-parallax="scroll"
+    data-image-src="@routes.Assets.at("images/parallax/gradient.jpg")"></div>
+
+    <div id="payment-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Select a payment method</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="payment-modal-loading">
+                        <img src="@routes.Assets.at("images/loading.gif")" id="loading-indicator"
+                        style="display : block ; margin : auto ;"/>
+                    </div>
+                    <div id="payment-modal-content">
+                        <p><a id="paypal-link" href="#"><img
+                        src="@routes.Assets.at("images/paypal-button.jpg")"
+                        alt="Paypal checkout logo"/>
+                        </a>
+                        </p>
+
+                        <p>- or -</p>
+
+                        <form id="form-cajastur" action="http://tpv.ceca.es:8000/cgi-bin/tpv" method=post>
+                            <input type="hidden" name="MerchantID" id="MerchantID"/>
+                            <input type="hidden" name="AcquirerBIN" id="AcquirerBIN"/>
+                            <input type="hidden" name="TerminalID" id="TerminalID"/>
+                            <input type="hidden" name="Num_operacion" id="Num_operacion"/>
+                            <input type="hidden" name="Importe" id="Importe"/>
+                            <input type="hidden" name="TipoMoneda" id="TipoMoneda"/>
+                            <input type="hidden" name="Exponente" id="Exponente"/>
+                            <input type="hidden" name="URL_OK" id="URL_OK"/>
+                            <input type="hidden" name="URL_NOK" id="URL_NOK"/>
+                            <input type="hidden" name="Firma" id="Firma"/>
+                            <input type="hidden" name="Idioma" value="1"/>
+                            <input type="hidden" name="Pago_soportado" value="SSL"/>
+                            <input type="hidden" name="Descripcion" id="Descripcion"/>
+                            <input type="hidden" name="Cifrado" value="SHA1"/>
+                            <a href="javascript:{}" onclick="$ ( '#form-cajastur' ).submit ( ) ; return false ;" class="green">
+                                Pay through Cajastur with your credit card
+                            </a>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @footer()
+}

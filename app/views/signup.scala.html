@@ -1,0 +1,30 @@
+@main("Sign up - Movify") {
+    <header id="login-header">
+        <img src="@routes.Assets.at("images/logo-black.png")" alt="Movify logo"/>
+        <h1><a href="@routes.Application.index()">Movify</a></h1>
+    </header>
+
+    <div id="form-container" class="container">
+        <h2>Sign up with your email address</h2>
+        <form method="post" action="@routes.UserController.doSignUp()">
+            <div class="form-group">
+                <input class="form-control" type="text" name="username" placeholder="Username" autocomplete="off"
+                required="true">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="email" placeholder="Email" autocomplete="off" required="true">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="confirm_email" placeholder="Confirm email" autocomplete="off"
+                required="true">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Password" required="true">
+            </div>
+
+            <p class="disclaimer">By clicking on Sign up, you agree to <a href="#">Movify's terms & conditions</a> and <a
+            href="#">privacy policy</a></p>
+            <input class="form-control green-button" type="submit" value="Sign up">
+        </form>
+    </div>
+}
