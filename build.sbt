@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "commons-codec" % "commons-codec" % "1.10",
-  "com.paypal.sdk" % "rest-api-sdk" % "1.1.2"
+  "com.paypal.sdk" % "rest-api-sdk" % "1.1.2",
+  "org.apache.commons" % "commons-lang3" % "3.3.2"
 )

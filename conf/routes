@@ -3,6 +3,7 @@
 # ~~~~
 
 # Home page
+GET         /movifyj                                      controllers.Application.index
 GET         /movifyj/                                     controllers.Application.index
 GET         /movifyj/init                                 controllers.Application.init
 
@@ -25,6 +26,7 @@ GET         /movifyj/genres/:name                         controllers.WebplayerC
 GET         /movifyj/genres/:name/movies                  controllers.WebplayerController.getMoviesByGenre(name: String)
 GET         /movifyj/movies                               controllers.WebplayerController.findMovies
 GET         /movifyj/movies/:id                           controllers.WebplayerController.getMovie(id: Integer)
+POST        /movifyj/movies/:id/reviews                   controllers.WebplayerController.rateMovie(id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /movifyj/assets/*file                         controllers.Assets.at(path="/public", file)

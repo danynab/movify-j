@@ -20,7 +20,6 @@ public class Application extends Controller {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null) ip = "127.0.0.1";
         String userAgent = request().getHeader("User-Agent");
-        Logger.debug("IP" + ": " + ip + ", User-Agent: " + userAgent);
         String sessionIdStr = ip + userAgent;
         return DigestUtils.md5Hex(sessionIdStr);
     }
