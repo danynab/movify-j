@@ -2,6 +2,7 @@ package models;
 
 import play.db.ebean.Model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -17,7 +18,7 @@ public class Genre extends Model {
     @Id
     private String name;
     private String image;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Movie> movies;
 
     public Genre(String name, String image) {

@@ -8,11 +8,6 @@ import business.*;
 public class BusinessFactoryImpl implements BusinessFactory {
 
     @Override
-    public BusinessFactory getBusinessFactory() {
-        return new BusinessFactoryImpl();
-    }
-
-    @Override
     public GenreService getGenreService() {
         return new GenreServiceImpl();
     }

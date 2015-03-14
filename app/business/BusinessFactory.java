@@ -7,8 +7,6 @@ import models.Movie;
  */
 public interface BusinessFactory {
 
-    public BusinessFactory getBusinessFactory();
-
     public GenreService getGenreService();
 
     public MovieService getMovieService();

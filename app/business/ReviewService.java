@@ -11,7 +11,7 @@ public interface ReviewService {
 
     public List<Review> getByMovieId(int movieId);
 
-    public List<Review> getByMovieIdAndUsername(int movieId, String username);
+    public Review getByMovieIdAndUsername(int movieId, String username);
 
     public Review rateMovie(String username, int movieId, String comment, double rating);
 }

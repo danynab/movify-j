@@ -4,7 +4,9 @@ import business.GenreService;
 import models.Genre;
 import models.Movie;
 import play.db.ebean.Model;
+import play.libs.Json;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,5 +39,23 @@ public class GenreServiceImpl implements GenreService {
         Genre genre = new Genre(name, image);
         genre.save();
         return genre;
+    }
+
+    @Override
+    public String genreToJson(Genre genre, boolean showMovies) {
+        if (showMovies)
+            return Json.stringify(Json.toJson(genre));
+        else {
+            GenreWrapper genreWrapper = new GenreWrapper(genre.getName(), genre.getImage());
+            return Json.stringify(Json.toJson(genreWrapper));
+        }
+    }
+
+    @Override
+    public String genresToJson(List<Genre> genres) {
+        List<GenreWrapper> genreWrappers = new ArrayList<>();
+        for (Genre genre : genres)
+            genreWrappers.add(new GenreWrapper(genre.getName(), genre.getImage()));
+        return Json.stringify(Json.toJson(genreWrappers));
     }
 }

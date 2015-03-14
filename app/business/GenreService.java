@@ -18,4 +18,8 @@ public interface GenreService {
 
     public Genre save(String name, String image);
 
+    public String genreToJson(Genre genre, boolean showMovies);
+
+    public String genresToJson(List<Genre> genres);
+
 }

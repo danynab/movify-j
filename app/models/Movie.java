@@ -29,7 +29,7 @@ public class Movie extends Model {
     private String background;
     private String movie;
     private String trailer;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Genre> genres;
 
     public Movie(String title, int year, int duration, String description, String storyline, String director, String writers, String stars, String cover, String background, String movie, String trailer) {

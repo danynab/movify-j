@@ -9,6 +9,8 @@ import models.Subscription;
  */
 public class Data {
 
+    private static final String URL_BASE = "http://156.35.95.67/movifyj/assets/";
+
     private static Data instance;
 
     public static Data getInstance() {
@@ -22,16 +24,22 @@ public class Data {
     }
 
     public void init() {
-        for (Subscription subscription : subscriptions)
+        for (Subscription subscription : subscriptions) {
             subscription.save();
+        }
 
-        for (Genre genre : genres)
+        for (Genre genre : genres) {
+            genre.setImage(URL_BASE + "genres/" + genre.getImage());
             genre.save();
+        }
 
         relationsMovieGenre();
 
-        for (Movie movie : movies)
+        for (Movie movie : movies) {
+            movie.setBackground(URL_BASE + "background/" + movie.getBackground());
+            movie.setCover(URL_BASE + "covers/" + movie.getCover());
             movie.save();
+        }
     }
 
     private Subscription subscription1 = new Subscription(

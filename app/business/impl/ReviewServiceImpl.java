@@ -21,8 +21,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> getByMovieIdAndUsername(int movieId, String username) {
-        return find.where("movieId = " + movieId + " and username = " + username).findList();
+    public Review getByMovieIdAndUsername(int movieId, String username) {
+        return find.where("movieId = " + movieId + " and username = " + username).findUnique();
     }
 
     @Override
