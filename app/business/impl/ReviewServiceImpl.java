@@ -1,6 +1,7 @@
 package business.impl;
 
 import business.ReviewService;
+import com.avaje.ebean.Expr;
 import models.Review;
 import play.db.ebean.Model;
 
@@ -22,7 +23,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getByMovieIdAndUsername(int movieId, String username) {
-        return find.where("movieId = " + movieId + " and username = '" + username + "'").findUnique();
+        return find.where().and(Expr.eq("movieId", movieId), Expr.eq("username", username)).findUnique();
     }
 
     @Override
