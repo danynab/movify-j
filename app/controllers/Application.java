@@ -12,7 +12,6 @@ public class Application extends Controller {
     public static final String SESSION_ID_KEY = "session_id";
     public static final String USERNAME_KEY = "username";
     public static final String PAYPAL_ID_KEY = "paypal_id";
-    public static final String CAJASTUR_ID_KEY = "cajastur_id";
     public static final String MONTHS_KEY = "months";
 
     public static String calculateSessionId(Http.Request request) {

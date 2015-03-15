@@ -101,7 +101,6 @@ public class AccountController extends Controller {
         String cancelUrl = "http://156.35.95.67/movifyj/account";
         CajasturPayment cajasturPayment = new CajasturPayment(operation, price, description, returnUrl, cancelUrl);
         session(Application.MONTHS_KEY, String.valueOf(months));
-        session(Application.CAJASTUR_ID_KEY, DigestUtils.md5Hex(cajasturPayment.getSignature()));
         ObjectNode result = Json.newObject();
         result.put("operation", cajasturPayment.getOperation());
         result.put("price", cajasturPayment.getPrice());
@@ -121,13 +120,10 @@ public class AccountController extends Controller {
     }
 
     public static Result processCajasturPayment() {
-        String cajasturId = session(Application.CAJASTUR_ID_KEY);
         int months = Integer.parseInt(session(Application.MONTHS_KEY));
-        session().remove(Application.CAJASTUR_ID_KEY);
         session().remove(Application.MONTHS_KEY);
         String username = session(Application.USERNAME_KEY);
-        if (cajasturId != null)
-            Factories.businessFactory.getUserService().increaseExpiration(username, months);
+        Factories.businessFactory.getUserService().increaseExpiration(username, months);
         return redirect(controllers.routes.AccountController.showAccount());
     }
 }
