@@ -13,7 +13,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.With;
-import views.html.account;
+import views.html.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,8 +49,9 @@ public class AccountController extends Controller {
         boolean expired = System.currentTimeMillis() > expiration;
 
         String cancel = request().getQueryString("cancel");
-        if (cancel != null)
+        if (cancel != null) {
             flash("danger", "Payment canceled");
+        }
 
         return ok(account.render(subscriptions, userName, expired, expirationStr));
     }
@@ -59,7 +60,7 @@ public class AccountController extends Controller {
         int months = Integer.parseInt(request().getQueryString("months"));
         Subscription subscription = Factories.businessFactory.getSubscriptionService().getByMonths(months);
         if (subscription == null)
-            return badRequest();
+            return badRequest(error.render());
         double price = subscription.getPrice();
         int quantity = 1;
         String name = "Movify " + subscription.getName() + " subscription";
@@ -76,22 +77,22 @@ public class AccountController extends Controller {
             session(Application.PAYPAL_ID_KEY, idHash);
             return ok(result);
         } catch (PayPalRESTException e) {
-            return badRequest();
+            return badRequest(error.render());
         }
     }
 
     public static Result processPaypalPayment() {
         if (!session().containsKey(Application.PAYPAL_ID_KEY) ||
                 !session().containsKey(Application.MONTHS_KEY))
-            return notFound();
+            return notFound(notfound.render());
         String paymentId = request().getQueryString("paymentId");
         String paymentIdHash = session(Application.PAYPAL_ID_KEY);
         int months = Integer.parseInt(session(Application.MONTHS_KEY));
         session().remove(Application.PAYPAL_ID_KEY);
         session().remove(Application.MONTHS_KEY);
         String username = session(Application.USERNAME_KEY);
-        if (paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
-            return notFound();
+        if (!paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
+            return notFound(notfound.render());
         }
         Factories.businessFactory.getUserService().increaseExpiration(username, months);
         flash("success", "Subscription extended");
