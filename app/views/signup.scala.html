@@ -6,6 +6,13 @@
 
     <div id="form-container" class="container">
         <h2>Sign up with your email address</h2>
+        @if(!flash.isEmpty()) {
+            <div class="alert danger">
+            @for((msgKey, msgValue) <- flash) {
+                <p>@msgValue</p>
+            }
+            </div>
+        }
         <form method="post" action="@routes.UserController.doSignUp()">
             <div class="form-group">
                 <input class="form-control" type="text" name="username" placeholder="Username" autocomplete="off"

@@ -1,3 +1,5 @@
+
+
 @main("Log in - Movify") {
     <header id="login-header">
         <img src="@routes.Assets.at("images/logo-black.png")" alt="Movify logo"/>
@@ -5,6 +7,13 @@
     </header>
 
     <div id="form-container" class="container">
+        @if(!flash.isEmpty()) {
+            <div class="alert danger">
+            @for((msgKey, msgValue) <- flash) {
+                <p>@msgValue</p>
+            }
+            </div>
+        }
         <form method="post" action="@routes.UserController.doLogin()">
             <div class="form-group">
                 <input class="form-control" type="text" name="username" placeholder="username" autocomplete="off"

@@ -48,6 +48,10 @@ public class AccountController extends Controller {
         String expirationStr = dateFormat.format(expirationCalendar.getTime());
         boolean expired = System.currentTimeMillis() > expiration;
 
+        String cancel = request().getQueryString("cancel");
+        if (cancel != null)
+            flash("danger", "Payment canceled");
+
         return ok(account.render(subscriptions, userName, expired, expirationStr));
     }
 
@@ -62,7 +66,7 @@ public class AccountController extends Controller {
         String description = subscription.getDescription();
         String sku = generateProductName(months);
         String returnUrl = "http://156.35.95.67/movifyj/account/subscription/paypal";
-        String cancelUrl = "http://156.35.95.67/movifyj/account";
+        String cancelUrl = "http://156.35.95.67/movifyj/account?cancel=true";
         try {
             PaypalPayment paypalPayment = new PaypalPayment(price, quantity, name, description, sku, returnUrl, cancelUrl);
             ObjectNode result = Json.newObject();
@@ -77,15 +81,20 @@ public class AccountController extends Controller {
     }
 
     public static Result processPaypalPayment() {
+        if (!session().containsKey(Application.PAYPAL_ID_KEY) ||
+                !session().containsKey(Application.MONTHS_KEY))
+            return notFound();
         String paymentId = request().getQueryString("paymentId");
         String paymentIdHash = session(Application.PAYPAL_ID_KEY);
         int months = Integer.parseInt(session(Application.MONTHS_KEY));
         session().remove(Application.PAYPAL_ID_KEY);
         session().remove(Application.MONTHS_KEY);
         String username = session(Application.USERNAME_KEY);
-        if (paymentIdHash != null && paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
-            Factories.businessFactory.getUserService().increaseExpiration(username, months);
+        if (paymentIdHash.equals(DigestUtils.md5Hex(paymentId))) {
+            return notFound();
         }
+        Factories.businessFactory.getUserService().increaseExpiration(username, months);
+        flash("success", "Subscription extended");
         return redirect(controllers.routes.AccountController.showAccount());
     }
 
@@ -98,7 +107,7 @@ public class AccountController extends Controller {
         double price = subscription.getPrice();
         String description = "Movify " + subscription.getName() + " subscription";
         String returnUrl = "http://156.35.95.67/movifyj/account/subscription/cajastur";
-        String cancelUrl = "http://156.35.95.67/movifyj/account";
+        String cancelUrl = "http://156.35.95.67/movifyj/account?cancel=true";
         CajasturPayment cajasturPayment = new CajasturPayment(operation, price, description, returnUrl, cancelUrl);
         session(Application.MONTHS_KEY, String.valueOf(months));
         ObjectNode result = Json.newObject();
@@ -120,10 +129,13 @@ public class AccountController extends Controller {
     }
 
     public static Result processCajasturPayment() {
+        if (!session().containsKey(Application.MONTHS_KEY))
+            return notFound();
         int months = Integer.parseInt(session(Application.MONTHS_KEY));
         session().remove(Application.MONTHS_KEY);
         String username = session(Application.USERNAME_KEY);
         Factories.businessFactory.getUserService().increaseExpiration(username, months);
+        flash("success", "Subscription extended");
         return redirect(controllers.routes.AccountController.showAccount());
     }
 }

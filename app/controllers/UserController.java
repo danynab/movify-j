@@ -27,8 +27,10 @@ public class UserController extends Controller {
             session(Application.SESSION_ID_KEY, sessionId);
             session(Application.USERNAME_KEY, username);
             return redirect(controllers.routes.Application.index());
-        } else
-            return redirect(controllers.routes.UserController.showSignUp());
+        } else {
+            flash("user", "Invalid credentials");
+            return redirect(controllers.routes.UserController.showLogin());
+        }
     }
 
     @With(LoginRequiredAction.class)
@@ -49,12 +51,14 @@ public class UserController extends Controller {
         String email = requestData.get("email");
         String confirmEmail = requestData.get("confirm_email");
         if (username.isEmpty())
-            return ok("Username can not be empty");
+            flash("username", "Username can not be empty");
         if (password.isEmpty())
-            return ok("Password can not be empty");
+            flash("password", "Password can not be empty");
         if (email.isEmpty())
-            return ok("Email can not be empty");
-        if (email.equals(confirmEmail)) {
+            flash("email", "Email can not be empty");
+        if (!email.equals(confirmEmail))
+            flash("emails", "Emails not equals");
+        if (flash().isEmpty()) {
             User user = Factories.businessFactory.getUserService().signUp(username, password, email);
             if (user != null) {
                 String sessionId = Application.calculateSessionId(request());
@@ -62,9 +66,9 @@ public class UserController extends Controller {
                 session(Application.USERNAME_KEY, username);
                 return redirect(routes.Application.index());
             }
-            return ok("Username already registered");
+            flash("user", "Username already registered");
         }
-        return ok("Emails not equals");
+        return redirect(controllers.routes.UserController.showSignUp());
     }
 
 }

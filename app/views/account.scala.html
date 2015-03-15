@@ -47,6 +47,13 @@
 
             } else {
                 <h3>Upgrade your plan</h3>
+                @if(!flash.isEmpty()) {
+                    @for((msgKey, msgValue) <- flash) {
+                        <div class="alert @msgKey">
+                        <p>@msgValue</p>
+                        </div>
+                    }
+                }
 
                 <p class="lead">Your subscription expires on <span class="green">@expiration</span>.
 
