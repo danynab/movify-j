@@ -3,12 +3,14 @@ package controllers;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.paypal.base.rest.PayPalRESTException;
 import filters.LoginRequiredAction;
+import infrastructure.BitcoinPayment;
 import infrastructure.CajasturPayment;
 import infrastructure.Factories;
 import infrastructure.PaypalPayment;
 import models.Subscription;
 import models.User;
 import org.apache.commons.codec.digest.DigestUtils;
+import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -56,11 +58,73 @@ public class AccountController extends Controller {
         return ok(account.render(subscriptions, userName, expired, expirationStr));
     }
 
-    public static Result generatePaypalPayment() {
-        int months = Integer.parseInt(request().getQueryString("months"));
+    public static Result generateBitcoinPayment() {
+        String monthsStr = request().getQueryString("months");
+        if (monthsStr == null)
+            return notFound(notfound.render());
+        int months;
+        try {
+            months = Integer.parseInt(monthsStr);
+        } catch (NumberFormatException e) {
+            months = 0;
+        }
         Subscription subscription = Factories.businessFactory.getSubscriptionService().getByMonths(months);
         if (subscription == null)
-            return badRequest(error.render());
+            return notFound(notfound.render());
+        double price = subscription.getPrice();
+        String orderNumber = generateProductName(months);
+        String url = "http://156.35.95.67/movifyj/account/subscription/bitcoin";
+        BitcoinPayment bitcoinPayment = new BitcoinPayment(price,orderNumber,url);
+        ObjectNode result = Json.newObject();
+        result.put("url", bitcoinPayment.getUrl());
+        session(Application.BITCOIN_ID_KEY, bitcoinPayment.getPaymentId());
+        session(Application.MONTHS_KEY, String.valueOf(months));
+        return ok(result);
+    }
+
+    public static Result processBitcoinPayment() {
+        /*if (!session().containsKey(Application.BITCOIN_ID_KEY) ||
+                !session().containsKey(Application.MONTHS_KEY)) {
+            return notFound(notfound.render());
+        }*/
+        String bitcoinId = "456kfjhln12"; //session(Application.BITCOIN_ID_KEY);
+        String monthsStr = session(Application.MONTHS_KEY);
+        int months;
+        try {
+            months = Integer.parseInt(monthsStr);
+        } catch (NumberFormatException e) {
+            months = 0;
+        }
+        session().remove(Application.BITCOIN_ID_KEY);
+        session().remove(Application.MONTHS_KEY);
+        String username = session(Application.USERNAME_KEY);
+        String bitcoinStatus = BitcoinPayment.checkPayment(bitcoinId);
+        Logger.debug(bitcoinStatus);
+        if ("confirmed".equals(bitcoinStatus)) {
+            Factories.businessFactory.getUserService().increaseExpiration(username, months);
+            flash("success", "Subscription extended");
+            return redirect(controllers.routes.AccountController.showAccount());
+        } else if ("pending".equals(bitcoinStatus)) {
+            flash("danger", "Payment is pending");
+            return redirect(controllers.routes.AccountController.showAccount());
+        } else {
+            return notFound(notfound.render());
+        }
+    }
+
+    public static Result generatePaypalPayment() {
+        String monthsStr = request().getQueryString("months");
+        if (monthsStr == null)
+            return notFound(notfound.render());
+        int months;
+        try {
+            months = Integer.parseInt(monthsStr);
+        } catch (NumberFormatException e) {
+            months = 0;
+        }
+        Subscription subscription = Factories.businessFactory.getSubscriptionService().getByMonths(months);
+        if (subscription == null)
+            return notFound(notfound.render());
         double price = subscription.getPrice();
         int quantity = 1;
         String name = "Movify " + subscription.getName() + " subscription";

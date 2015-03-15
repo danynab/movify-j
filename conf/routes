@@ -16,9 +16,10 @@ GET         /movifyj/logout                               controllers.UserContro
 GET         /movifyj/account                              controllers.AccountController.showAccount
 GET         /movifyj/generatePaypalPayment                controllers.AccountController.generatePaypalPayment
 GET         /movifyj/generateCajasturPayment              controllers.AccountController.generateCajasturPayment
+GET         /movifyj/generateBitcoinPayment               controllers.AccountController.generateBitcoinPayment
 GET         /movifyj/account/subscription/paypal          controllers.AccountController.processPaypalPayment
-POST        /movifyj/account/subscription/paypal          controllers.AccountController.processPaypalPayment
 GET         /movifyj/account/subscription/cajastur        controllers.AccountController.processCajasturPayment
+GET         /movifyj/account/subscription/bitcoin         controllers.AccountController.processBitcoinPayment
 
 GET         /movifyj/webplayer                            controllers.WebplayerController.showWebplayer
 GET         /movifyj/genres                               controllers.WebplayerController.findGenres

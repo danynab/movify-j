@@ -1,4 +1,5 @@
 var paypalLinkClicked = false;
+var bitcoinLinkClicked = false;
 var cajasturLinkClicked = false;
 var cajasturLoaded = false;
 
@@ -37,16 +38,31 @@ function generatePaypalPaymentData(months) {
     });
 }
 
+function generateBitcoinPaymentData(months) {
+    $('#bitcoin-link').attr('href', '#');
+    $.getJSON('/movifyj/generateBitcoinPayment', {
+        months: months
+    }, function (bitcoin) {
+        $('#bitcoin-link').attr('href', bitcoin.url);
+        if (bitcoinLinkClicked) {
+            $(location).attr('href', bitcoin.url);
+            $('#payment-modal').modal('hide');
+        }
+    });
+}
+
 $(function () {
     $('a.checkout').bind('click', function () {
         paypalLinkClicked = false;
         cajasturLinkClicked = false;
         cajasturLoaded = false;
+        bitcoinLinkClicked = false;
         $('#payment-modal-loading').hide();
         $('#payment-modal-content').show();
         var months = this.getAttribute('data-months')
         generateCajasturPaymentData(months);
         generatePaypalPaymentData(months);
+        generateBitcoinPaymentData(months);
         return false;
     });
 
@@ -60,6 +76,18 @@ $(function () {
         }
         return true;
     });
+
+    $('#bitcoin-link').bind('click', function () {
+        bitcoinLinkClicked = true;
+        var href = $('#bitcoin-link').attr('href');
+        if (href == '#') {
+            $('#payment-modal-loading').show();
+            $('#payment-modal-content').hide();
+            return false;
+        }
+        return true;
+    });
+
 
     $('#form-cajastur').submit(function (event) {
         cajasturLinkClicked = true;

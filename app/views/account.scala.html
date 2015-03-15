@@ -40,6 +40,13 @@
         <div class="container">
             @if(expired) {
                 <h3>Choose your plan</h3>
+                @if(!flash.isEmpty()) {
+                    @for((msgKey, msgValue) <- flash) {
+                        <div class="alert @msgKey">
+                            <p>@msgValue</p>
+                        </div>
+                    }
+                }
 
                 <p class="lead">You haven't got an active subscription. Choose one below.</p>
 
@@ -103,6 +110,12 @@
                         alt="Paypal checkout logo"/>
                         </a>
                         </p>
+
+                        <p>- or -</p>
+
+                        <p><a id="bitcoin-link" href="#"><img
+                        src="@routes.Assets.at("images/bitcoin.png")"
+                        alt="Bitcoin checkout logo"/></a></p>
 
                         <p>- or -</p>
 
