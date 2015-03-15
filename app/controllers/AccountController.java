@@ -98,7 +98,12 @@ public class AccountController extends Controller {
         session().remove(Application.BITCOIN_ID_KEY);
         session().remove(Application.MONTHS_KEY);
         String username = session(Application.USERNAME_KEY);
-        String bitcoinStatus = BitcoinPayment.checkPayment(bitcoinId);
+        String bitcoinStatus;
+        try {
+            bitcoinStatus = BitcoinPayment.checkPayment(bitcoinId);
+        } catch (Exception e) {
+            bitcoinStatus = null;
+        }
         Logger.debug(bitcoinStatus);
         if ("confirmed".equals(bitcoinStatus)) {
             Factories.businessFactory.getUserService().increaseExpiration(username, months);
@@ -108,7 +113,8 @@ public class AccountController extends Controller {
             flash("danger", "Payment is pending");
             return redirect(controllers.routes.AccountController.showAccount());
         } else {
-            return notFound(notfound.render());
+            flash("danger", "Payment canceled");
+            return redirect(controllers.routes.AccountController.showAccount());
         }
     }
 
